@@ -1,0 +1,28 @@
+docker run --rm -it \
+-p 3000:8080 -p 3001:8081 \
+-v $(pwd)/config.properties:/home/model-server/config.properties \
+-v $(pwd)/store:/home/model-server/model-store pytorch/torchserve:0.9.0-cpu \
+torchserve --start --model-store model-store --models=titanic_cls.mar
+
+curl http://localhost:3001/models/
+
+curl -X POST http://localhost:3000/predictions/titanic_cls -H "Content-Type: application/json" -d '[
+    {
+        "Pclass": 3,
+        "Sex": "male",
+        "Age": 22,
+        "SibSp": 1,
+        "Parch": 0,
+        "Fare": 7.25,
+        "Embarked": "S"
+    },
+    {
+        "Pclass": 1,
+        "Sex": "female",
+        "Age": 38,
+        "SibSp": 1,
+        "Parch": 0,
+        "Fare": 71.2833,
+        "Embarked": "C"
+    }
+]'
